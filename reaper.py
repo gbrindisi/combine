@@ -35,8 +35,12 @@ def get_feeds(feed_dictonary):
                     feed_harvest.append((label, response.status_code, response.text))
     
     for label, each in file_feeds:
-        with open(each,'rb') as f:
-            feed_harvest.append((label, 200, f.read()))
+        try:
+            with open(each,'rb') as f:
+                feed_harvest.append((label, 200, f.read()))
+        except IOError as e:
+            assert isinstance(logger, logging.Logger)
+            logger.error('Reaper: Error while opening "%s" - %s' % (each, e.strerror))
 
     return feed_harvest
 
